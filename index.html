@@ -74,18 +74,24 @@
   <button onclick="getRandomMeme()">再抽一張厭世圖 😮‍💨</button>
 
   <script>
-    // 預設的上班厭世梗圖圖片網址清單
+    // 預設的梗圖圖片網址清單（已替換為可公開連線的圖片）
     const memes = [
-      "https://i.imgur.com/39J6Ew9.jpeg",
-      "https://i.imgur.com/kR1Z7sK.jpeg",
-      "https://i.imgur.com/W2dCqXm.jpeg",
-      "https://i.imgur.com/P5x1f4V.jpeg",
-      "https://i.imgur.com/6XzY7X2.jpeg",
-      "https://i.imgur.com/8QzQ4Yx.jpeg"
+      "https://picsum.photos/id/1025/600/600",
+      "https://picsum.photos/id/1062/600/600",
+      "https://picsum.photos/id/237/600/600",
+      "https://picsum.photos/id/1005/600/600"
     ];
 
+    let lastIndex = -1;
+
     function getRandomMeme() {
-      const randomIndex = Math.floor(Math.random() * memes.length);
+      let randomIndex;
+      // 避免連續兩次抽到相同的圖片
+      do {
+        randomIndex = Math.floor(Math.random() * memes.length);
+      } while (randomIndex === lastIndex && memes.length > 1);
+
+      lastIndex = randomIndex;
       document.getElementById("meme").src = memes[randomIndex];
     }
 
