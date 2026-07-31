@@ -61,6 +61,10 @@
     button:active {
       transform: scale(0.95);
     }
+    #loading {
+      font-size: 1rem;
+      color: #888;
+    }
   </style>
 </head>
 <body>
@@ -68,31 +72,48 @@
   <h1>💼 今天又是不想上班的一天...</h1>
 
   <div class="meme-container">
-    <img id="meme" src="" alt="上班厭世梗圖">
+    <div id="loading">抽取厭世能量中... 🎲</div>
+    <img id="meme" src="" alt="上班厭世梗圖" style="display: none;">
   </div>
 
   <button onclick="getRandomMeme()">再抽一張厭世圖 😮‍💨</button>
 
   <script>
-    // 預設的梗圖圖片網址清單（已替換為可公開連線的圖片）
-    const memes = [
-      "https://picsum.photos/id/1025/600/600",
-      "https://picsum.photos/id/1062/600/600",
-      "https://picsum.photos/id/237/600/600",
-      "https://picsum.photos/id/1005/600/600"
-    ];
+    // 預先準備上百張熱門梗图的自動加載機制
+    // 這裡使用自動抓取公開梗圖庫 API
+    async function getRandomMeme() {
+      const imgElement = document.getElementById("meme");
+      const loadingElement = document.getElementById("loading");
 
-    let lastIndex = -1;
+      loadingElement.style.display = "block";
+      imgElement.style.display = "none";
 
-    function getRandomMeme() {
-      let randomIndex;
-      // 避免連續兩次抽到相同的圖片
-      do {
-        randomIndex = Math.floor(Math.random() * memes.length);
-      } while (randomIndex === lastIndex && memes.length > 1);
+      try {
+        // 從梗圖資料庫隨機獲取圖片 (支援海量圖庫)
+        const timestamp = new Date().getTime();
+        // 隨機從 API 抓取熱門梗圖
+        const response = await fetch(`https://meme-api.com/gimme/workmemes/${timestamp}`);
+        
+        if (!response.ok) {
+          // 備用方案：若特定板塊失敗，抓取全網隨機熱門梗圖
+          const fallbackResponse = await fetch(`https://meme-api.com/gimme`);
+          const fallbackData = await fallbackResponse.json();
+          imgElement.src = fallbackData.url;
+        } else {
+          const data = await response.json();
+          imgElement.src = data.url;
+        }
 
-      lastIndex = randomIndex;
-      document.getElementById("meme").src = memes[randomIndex];
+        imgElement.onload = () => {
+          loadingElement.style.display = "none";
+          imgElement.style.display = "block";
+        };
+      } catch (error) {
+        // 若 API 完全斷開，備用本機/常見梗圖庫
+        imgElement.src = "https://picsum.photos/id/1025/600/600";
+        loadingElement.style.display = "none";
+        imgElement.style.display = "block";
+      }
     }
 
     // 第一次進頁面自動隨機顯示
