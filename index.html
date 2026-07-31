@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>上班厭世梗圖抽取器 💼</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #1a1a1d;
+      color: #eeeeee;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      color: #a2a2a2;
+      font-weight: normal;
+    }
+    .meme-container {
+      max-width: 95%;
+      max-height: 70vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 25px;
+      min-height: 250px;
+    }
+    img {
+      max-width: 100%;
+      max-height: 70vh;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      object-fit: contain;
+    }
+    button {
+      background-color: #4e542e;
+      color: #ffffff;
+      border: none;
+      padding: 14px 28px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      transition: all 0.2s ease;
+    }
+    button:hover {
+      background-color: #616939;
+    }
+    button:active {
+      transform: scale(0.95);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>💼 今天又是不想上班的一天...</h1>
+
+  <div class="meme-container">
+    <img id="meme" src="" alt="上班厭世梗圖">
+  </div>
+
+  <button onclick="getRandomMeme()">再抽一張厭世圖 😮‍💨</button>
+
+  <script>
+    // 預設的上班厭世梗圖圖片網址清單
+    const memes = [
+      "https://i.imgur.com/39J6Ew9.jpeg",
+      "https://i.imgur.com/kR1Z7sK.jpeg",
+      "https://i.imgur.com/W2dCqXm.jpeg",
+      "https://i.imgur.com/P5x1f4V.jpeg",
+      "https://i.imgur.com/6XzY7X2.jpeg",
+      "https://i.imgur.com/8QzQ4Yx.jpeg"
+    ];
+
+    function getRandomMeme() {
+      const randomIndex = Math.floor(Math.random() * memes.length);
+      document.getElementById("meme").src = memes[randomIndex];
+    }
+
+    // 第一次進頁面自動隨機顯示
+    window.onload = getRandomMeme;
+  </script>
+</body>
+</html>
