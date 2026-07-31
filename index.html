@@ -28,20 +28,24 @@
       font-weight: normal;
     }
     .meme-container {
-      max-width: 95%;
-      max-height: 70vh;
+      width: 100%;
+      max-width: 500px; /* 限制容器最大寬度，避免圖片太大 */
+      height: 60vh;
+      max-height: 500px; /* 限制容器最大高度 */
       display: flex;
       justify-content: center;
       align-items: center;
       margin-bottom: 25px;
-      min-height: 250px;
+      position: relative;
     }
     img {
       max-width: 100%;
-      max-height: 70vh;
+      max-height: 100%;
+      width: auto;
+      height: auto;
       border-radius: 12px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
-      object-fit: contain;
+      object-fit: contain; /* 確保圖片不變形且完整顯示 */
     }
     button {
       background-color: #4e542e;
@@ -64,6 +68,7 @@
     #loading {
       font-size: 1rem;
       color: #888;
+      position: absolute;
     }
   </style>
 </head>
@@ -79,41 +84,35 @@
   <button onclick="getRandomMeme()">再抽一張厭世圖 😮‍💨</button>
 
   <script>
-    // 預先準備上百張熱門梗图的自動加載機制
-    // 這裡使用自動抓取公開梗圖庫 API
-    async function getRandomMeme() {
+    function getRandomMeme() {
       const imgElement = document.getElementById("meme");
       const loadingElement = document.getElementById("loading");
 
       loadingElement.style.display = "block";
       imgElement.style.display = "none";
 
-      try {
-        // 從梗圖資料庫隨機獲取圖片 (支援海量圖庫)
-        const timestamp = new Date().getTime();
-        // 隨機從 API 抓取熱門梗圖
-        const response = await fetch(`https://meme-api.com/gimme/workmemes/${timestamp}`);
-        
-        if (!response.ok) {
-          // 備用方案：若特定板塊失敗，抓取全網隨機熱門梗圖
-          const fallbackResponse = await fetch(`https://meme-api.com/gimme`);
-          const fallbackData = await fallbackResponse.json();
-          imgElement.src = fallbackData.url;
-        } else {
-          const data = await response.json();
-          imgElement.src = data.url;
-        }
+      // 產生隨機數，確保不會用到快取，圖片尺寸嚴格限制在 500x500 內（載入超快）
+      const randomSeed = Math.floor(Math.random() * 1000);
+      const imageUrl = `https://picsum.photos/seed/${randomSeed}/500/500`;
 
-        imgElement.onload = () => {
-          loadingElement.style.display = "none";
-          imgElement.style.display = "block";
-        };
-      } catch (error) {
-        // 若 API 完全斷開，備用本機/常見梗圖庫
-        imgElement.src = "https://picsum.photos/id/1025/600/600";
+      // 建立預載物物件，確保載入成功才顯示
+      const newImg = new Image();
+      newImg.src = imageUrl;
+
+      newImg.onload = () => {
+        imgElement.src = imageUrl;
         loadingElement.style.display = "none";
         imgElement.style.display = "block";
-      }
+      };
+
+      // 萬一 3 秒內沒反應，自動補救
+      setTimeout(() => {
+        if (imgElement.style.display === "none") {
+          imgElement.src = "https://picsum.photos/500/500";
+          loadingElement.style.display = "none";
+          imgElement.style.display = "block";
+        }
+      }, 3000);
     }
 
     // 第一次進頁面自動隨機顯示
