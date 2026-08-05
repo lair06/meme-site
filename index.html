@@ -10,65 +10,99 @@
       margin: 0;
       padding: 0;
     }
+
     body {
-      background-color: #1a1a1d;
-      color: #eeeeee;
+      /* 深邃質感暗色背景搭配微弱漸層 */
+      background: radial-gradient(circle at 50% 20%, #1e1e24 0%, #0d0d11 100%);
+      color: #f1f5f9;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      padding: 20px;
+      padding: 24px;
+      overflow-x: hidden;
     }
+
     h1 {
-      font-size: 1.2rem;
-      margin-bottom: 15px;
-      color: #a2a2a2;
-      font-weight: normal;
+      font-size: 1.35rem;
+      margin-bottom: 24px;
+      color: #94a3b8;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     }
+
     .meme-container {
       width: 100%;
-      max-width: 500px;
+      max-width: 480px;
       height: 60vh;
-      max-height: 500px;
+      max-height: 480px;
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-bottom: 25px;
+      margin-bottom: 32px;
       position: relative;
+      /* 毛玻璃外框效果 */
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
     }
+
     img {
       max-width: 100%;
       max-height: 100%;
       width: auto;
       height: auto;
       border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
       object-fit: contain;
+      /* 淡入動畫 */
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     }
+
+    /* 圖片淡出與放大的動態效果 */
+    .fade-out {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+
     button {
-      background-color: #4e542e;
+      /* 絢麗漸層按鈕 */
+      background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
       color: #ffffff;
       border: none;
-      padding: 14px 28px;
-      font-size: 18px;
-      font-weight: bold;
-      border-radius: 30px;
+      padding: 16px 36px;
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      border-radius: 50px;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-      transition: all 0.2s ease;
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.35);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
     button:hover {
-      background-color: #616939;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(168, 85, 247, 0.5);
     }
+
     button:active {
-      transform: scale(0.95);
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
     }
+
     #loading {
-      font-size: 1rem;
-      color: #888;
+      font-size: 0.95rem;
+      color: #64748b;
       position: absolute;
+      font-weight: 400;
+      letter-spacing: 0.05em;
     }
   </style>
 </head>
@@ -78,13 +112,12 @@
 
   <div class="meme-container">
     <div id="loading">載入圖片庫中... 🎲</div>
-    <img id="meme" src="" alt="上班厭世梗圖" style="display: none;">
+    <img id="meme" src="" alt="上班厭世梗圖" class="fade-out" style="display: none;">
   </div>
 
   <button onclick="getRandomMeme()">再抽一張厭世圖 😮‍💨</button>
 
   <script>
-    // GitHub API 相關設定
     const username = "lair06";
     const repo = "meme-site";
     const folderPath = "meme picture";
@@ -92,7 +125,6 @@
     let memesList = [];
     let lastIndex = -1;
 
-    // 頁面載入時，自動向 GitHub 抓取資料夾內的圖片檔名清單
     async function fetchMemeList() {
       const loadingElement = document.getElementById("loading");
       try {
@@ -103,7 +135,6 @@
 
         const data = await response.json();
 
-        // 篩選出圖檔（jpg, jpeg, png, gif, webp）
         memesList = data
           .filter(file => file.type === "file" && /\.(jpg|jpeg|png|gif|webp)$/i.test(file.name))
           .map(file => file.path);
@@ -119,19 +150,18 @@
       }
     }
 
-    // 隨機抽取圖片
     function getRandomMeme() {
       if (memesList.length === 0) return;
 
       const imgElement = document.getElementById("meme");
       const loadingElement = document.getElementById("loading");
 
+      // 動態漸隱舊圖
+      imgElement.classList.add("fade-out");
       loadingElement.innerText = "抽取厭世能量中... 🎲";
       loadingElement.style.display = "block";
-      imgElement.style.display = "none";
 
       let randomIndex;
-      // 避免連續兩次抽到相同的圖片
       do {
         randomIndex = Math.floor(Math.random() * memesList.length);
       } while (randomIndex === lastIndex && memesList.length > 1);
@@ -139,17 +169,20 @@
       lastIndex = randomIndex;
       const selectedImgSrc = memesList[randomIndex];
 
-      // 預載圖片確保載入完成後流暢顯示
       const tempImg = new Image();
       tempImg.src = selectedImgSrc;
       tempImg.onload = () => {
         imgElement.src = selectedImgSrc;
         loadingElement.style.display = "none";
         imgElement.style.display = "block";
+        
+        // 延遲微調，呈現滑順淡入
+        setTimeout(() => {
+          imgElement.classList.remove("fade-out");
+        }, 50);
       };
     }
 
-    // 初始化：載入動態清單
     window.onload = fetchMemeList;
   </script>
 </body>
