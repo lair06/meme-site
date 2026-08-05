@@ -12,8 +12,10 @@
     }
 
     body {
-      /* 暗黑仙俠：狂風暴雨與閃電色調 */
-      background: radial-gradient(circle at 50% 20%, #1a232a 0%, #080b0e 100%);
+      /* 暗黑仙俠：套用根目錄 bg 背景圖與深色遮罩 */
+      background: linear-gradient(rgba(8, 11, 14, 0.85), rgba(8, 11, 14, 0.85)), 
+                  url("bg") no-repeat center center fixed;
+      background-size: cover;
       color: #e2e8f0;
       display: flex;
       flex-direction: column;
