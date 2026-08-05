@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>大雜燴一番賞 🎰 - 職場厭世抽獎機</title>
+  <title>大雜燴轉盤 ⚡</title>
   <style>
     * {
       box-sizing: border-box;
@@ -12,65 +12,76 @@
     }
 
     body {
-      background: radial-gradient(circle at 50% 30%, #2b1055 0%, #0f0c29 100%);
-      color: #ffffff;
+      /* 暗黑仙俠：狂風暴雨與閃電色調 */
+      background: radial-gradient(circle at 50% 20%, #1a232a 0%, #080b0e 100%);
+      color: #e2e8f0;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
       padding: 20px;
       overflow-x: hidden;
     }
 
-    h1 {
-      font-size: 1.6rem;
-      margin-bottom: 20px;
-      color: #ffd700;
-      text-shadow: 0 0 12px rgba(255, 215, 0, 0.6), 0 0 20px rgba(255, 0, 128, 0.4);
-      letter-spacing: 0.08em;
+    /* 頂部仙俠標題 */
+    .header-banner {
       text-align: center;
+      margin-bottom: 20px;
     }
 
-    /* 🎰 拉霸機外框視窗 */
+    h1 {
+      font-size: 1.8rem;
+      color: #e2e8f0;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(56, 189, 248, 0.4);
+      letter-spacing: 0.15em;
+      font-weight: 900;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      letter-spacing: 0.1em;
+      margin-top: 5px;
+    }
+
+    /* 🎰 水墨金屬拉霸視窗 */
     .slot-machine-container {
       width: 100%;
-      max-width: 450px;
+      max-width: 480px;
       height: 380px;
-      background: #181528;
-      border: 4px solid #ff007f;
-      border-radius: 20px;
-      box-shadow: 0 0 30px rgba(255, 0, 127, 0.4), inset 0 0 15px rgba(0, 0, 0, 0.8);
+      background: #0f172a;
+      border: 3px solid #475569;
+      border-radius: 16px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(0, 0, 0, 0.9), 0 0 15px rgba(56, 189, 248, 0.2);
       position: relative;
-      overflow: hidden; /* 隱藏滾出區域 */
+      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-bottom: 25px;
     }
 
-    /* 圖片顯示區塊 */
     .slot-screen {
       width: 100%;
       height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 15px;
+      padding: 12px;
     }
 
     img {
       max-width: 100%;
       max-height: 100%;
-      border-radius: 10px;
+      border-radius: 8px;
       object-fit: contain;
     }
 
-    /* 🎰 拉霸滾動動畫 */
+    /* 🎰 無限滾動動畫 */
     .spinning {
-      animation: slotSpin 0.15s linear infinite;
-      filter: blur(2px); /* 滾動時的動態模糊 */
+      animation: slotSpin 0.12s linear infinite;
+      filter: blur(3px);
     }
 
     @keyframes slotSpin {
@@ -78,77 +89,85 @@
       100% { transform: translateY(100%); }
     }
 
-    /* 🤪 無厘頭文字顯示 */
-    #status-text {
-      position: absolute;
-      bottom: 15px;
-      background: rgba(0, 0, 0, 0.85);
-      border: 1px solid #ffd700;
-      color: #00ffff;
-      padding: 8px 16px;
-      border-radius: 30px;
-      font-size: 0.95rem;
-      font-weight: bold;
-      letter-spacing: 0.05em;
-      box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-      text-align: center;
-      max-width: 90%;
-      z-index: 10;
+    /* 📜 無厘頭文字顯示區（移至圖片下方，不遮擋圖片） */
+    .status-container {
+      width: 100%;
+      max-width: 480px;
+      height: 50px;
+      margin-top: 15px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    /* 🎰 操控區（含把手） */
+    #status-text {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid #38bdf8;
+      color: #7dd3fc;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      letter-spacing: 0.08em;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    /* 🎮 控制按鈕與把手 */
     .controls {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 20px;
     }
 
-    /* 按鈕樣式 */
     .spin-btn {
-      background: linear-gradient(135deg, #ff007f 0%, #7928ca 100%);
-      color: #ffffff;
-      border: 2px solid #ffd700;
-      padding: 16px 32px;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: #38bdf8;
+      border: 2px solid #38bdf8;
+      padding: 16px 36px;
       font-size: 1.1rem;
       font-weight: bold;
-      border-radius: 50px;
+      border-radius: 8px;
       cursor: pointer;
-      box-shadow: 0 0 20px rgba(255, 0, 127, 0.5);
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
       transition: all 0.2s ease;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.1em;
+    }
+
+    .spin-btn.active-stop {
+      background: linear-gradient(135deg, #991b1b 0%, #450a0a 100%);
+      color: #fca5a5;
+      border-color: #ef4444;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
     }
 
     .spin-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+      transform: translateY(-2px);
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.6);
     }
 
     .spin-btn:active {
-      transform: scale(0.95);
+      transform: translateY(1px);
     }
 
-    .spin-btn:disabled {
-      background: #555;
-      border-color: #888;
-      box-shadow: none;
-      cursor: not-allowed;
-    }
-
-    /* 🕹️ 視覺把手 (Lever) */
+    /* 🕹️ 仙俠金屬把手 */
     .lever-container {
-      width: 20px;
-      height: 80px;
-      background: #333;
-      border-radius: 10px;
+      width: 18px;
+      height: 75px;
+      background: #1e293b;
+      border: 1px solid #475569;
+      border-radius: 6px;
       position: relative;
       display: flex;
       justify-content: center;
     }
 
     .lever-stick {
-      width: 8px;
-      height: 60px;
-      background: linear-gradient(to right, #ccc, #fff, #888);
+      width: 6px;
+      height: 55px;
+      background: linear-gradient(to right, #64748b, #94a3b8, #475569);
       position: absolute;
       top: 10px;
       transform-origin: bottom center;
@@ -156,17 +175,16 @@
     }
 
     .lever-ball {
-      width: 24px;
-      height: 24px;
-      background: radial-gradient(circle at 30% 30%, #ff4d4d, #990000);
+      width: 22px;
+      height: 22px;
+      background: radial-gradient(circle at 30% 30%, #38bdf8, #0369a1);
       border-radius: 50%;
       position: absolute;
-      top: -12px;
+      top: -10px;
       left: -8px;
-      box-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
     }
 
-    /* 把手拉下動畫 */
     .lever-pull .lever-stick {
       transform: rotateX(60deg) scaleY(0.5);
     }
@@ -174,17 +192,26 @@
 </head>
 <body>
 
-  <h1>🎪 大雜燴一番賞 🎰</h1>
-
-  <div class="slot-machine-container">
-    <div class="slot-screen">
-      <img id="meme" src="" alt="一番賞籤圖" style="display: none;">
-    </div>
-    <div id="status-text">準備好開抽了嗎？ 🎲</div>
+  <div class="header-banner">
+    <h1>六人成虎 ‧ 渡劫法陣 ⚡</h1>
+    <div class="subtitle">— 職場萬劫不復，唯有抽籤渡化 —</div>
   </div>
 
+  <!-- 🎰 拉霸視窗 -->
+  <div class="slot-machine-container">
+    <div class="slot-screen">
+      <img id="meme" src="" alt="仙俠籤圖" style="display: none;">
+    </div>
+  </div>
+
+  <!-- 📜 文字顯示區（不擋圖） -->
+  <div class="status-container">
+    <div id="status-text">請拉動把手，啟動渡劫法陣 ☯️</div>
+  </div>
+
+  <!-- 🎮 控制區 -->
   <div class="controls">
-    <button id="draw-btn" class="spin-btn" onclick="pullLever()">拉動把手抽一張 🎟️</button>
+    <button id="draw-btn" class="spin-btn" onclick="toggleSlot()">啟動法陣 ⚡</button>
     <div id="lever" class="lever-container">
       <div class="lever-stick">
         <div class="lever-ball"></div>
@@ -200,22 +227,21 @@
     let memesList = [];
     let lastIndex = -1;
     let isSpinning = false;
+    let textInterval = null;
 
-    // 🤪 無厘頭文字庫
-    const funnyTexts = [
-      "【從同事內褲挖掘中...】",
-      "【翻閱董事長的皮夾...】",
-      "【6F男廁馬桶尋找中...】",
-      "【正在偷翻人資的離職面談紀錄...】",
-      "【竊取隔壁桌剩下的午餐...】",
-      "【正在茶水間監聽八卦...】",
-      "【潛入主管的夢境尋找解答...】",
-      "【正在計算今天發呆的時間價值...】",
-      "【從影印機夾紙堆中抽取中...】",
-      "【偷偷修改考勤系統中...】",
-      "【正在召喚特休假期惡魔...】",
-      "【幫老闆的咖啡加料中...】",
-      "【正在搜尋「如何不留痕跡離職」...】"
+    // 🤪 仙俠修仙 × 職場無厘頭文字庫
+    const xianxiaTexts = [
+      "【正在偷翻掌門人的內褲...】",
+      "【深入6F洗手間渡劫中...】",
+      "【偷看長老皮夾裡的靈石數量...】",
+      "【強行吸收隔壁師兄的加班廢氣...】",
+      "【正在審查同門師弟的離職心法...】",
+      "【茶水間偷聽仙界密辛中...】",
+      "【潛入老祖夢境索取特休假...】",
+      "【計算今日偷懶獲得的修為...】",
+      "【正在幫掌門的靈丹偷加廢料...】",
+      "【正在修改天劫考勤系統...】",
+      "【召喚「不想上工」之太古魔尊...】"
     ];
 
     async function fetchMemeList() {
@@ -231,42 +257,62 @@
           .map(file => file.path);
 
         if (memesList.length > 0) {
-          statusText.innerText = "賞籤加載完畢！請拉動把手 🎯";
+          statusText.innerText = "法陣已就緒，請啟動！ ☯️";
         } else {
-          statusText.innerText = "資料夾內沒有賞籤！";
+          statusText.innerText = "資料夾內尚未放置靈圖！";
         }
       } catch (error) {
         console.error(error);
-        statusText.innerText = "讀取連線失敗，請檢查設定！";
+        statusText.innerText = "法陣連線失敗，請檢查設定！";
       }
     }
 
-    function pullLever() {
-      if (isSpinning || memesList.length === 0) return;
-      isSpinning = true;
+    // 手動控制：啟動 vs 停止
+    function toggleSlot() {
+      if (memesList.length === 0) return;
 
+      if (!isSpinning) {
+        startSpinning();
+      } else {
+        stopSpinning();
+      }
+    }
+
+    // 啟動滾動
+    function startSpinning() {
+      isSpinning = true;
       const drawBtn = document.getElementById("draw-btn");
       const lever = document.getElementById("lever");
       const imgElement = document.getElementById("meme");
-      const statusText = document.getElementById("status-text");
 
-      drawBtn.disabled = true;
-
-      // 1. 動態拉下把手
+      // 把手動畫
       lever.classList.add("lever-pull");
       setTimeout(() => lever.classList.remove("lever-pull"), 400);
 
-      // 2. 開啟拉霸滾動動畫
+      // 開啟圖片滾動
       imgElement.classList.add("spinning");
       imgElement.style.display = "block";
 
-      // 3. 輪播無厘頭文字
-      let textInterval = setInterval(() => {
-        const randomText = funnyTexts[Math.floor(Math.random() * funnyTexts.length)];
-        statusText.innerText = randomText;
-      }, 150);
+      // 切換按鈕狀態
+      drawBtn.innerText = "🛑 煞車！開箱結緣";
+      drawBtn.classList.add("active-stop");
 
-      // 4. 隨機決定抽中的圖片
+      // 跑動無厘頭文字
+      textInterval = setInterval(() => {
+        const randomText = xianxiaTexts[Math.floor(Math.random() * xianxiaTexts.length)];
+        document.getElementById("status-text").innerText = randomText;
+      }, 120);
+    }
+
+    // 停止滾動並開牌
+    function stopSpinning() {
+      const drawBtn = document.getElementById("draw-btn");
+      const imgElement = document.getElementById("meme");
+      const statusText = document.getElementById("status-text");
+
+      clearInterval(textInterval);
+
+      // 隨機選圖
       let randomIndex;
       do {
         randomIndex = Math.floor(Math.random() * memesList.length);
@@ -274,18 +320,24 @@
       lastIndex = randomIndex;
 
       const selectedImgSrc = memesList[randomIndex];
-      const tempImg = new Image();
-      tempImg.src = selectedImgSrc;
+      imgElement.src = selectedImgSrc;
+      imgElement.classList.remove("spinning"); // 停止滾動動畫
 
-      // 5. 滾動 2 秒後精準「煞車」停止
+      // 抽中的無厘頭文字靜止顯示 3 秒
+      const finalRandomText = xianxiaTexts[Math.floor(Math.random() * xianxiaTexts.length)];
+      statusText.innerText = `✨ 結緣成功：${finalRandomText}`;
+
+      // 重置按鈕狀態
+      drawBtn.innerText = "啟動法陣 ⚡";
+      drawBtn.classList.remove("active-stop");
+      isSpinning = false;
+
+      // 3 秒後恢復預設提示文字
       setTimeout(() => {
-        clearInterval(textInterval);
-        imgElement.src = selectedImgSrc;
-        imgElement.classList.remove("spinning"); // 停止動畫
-        statusText.innerText = "🎉 恭喜抽中大獎！(吧)";
-        drawBtn.disabled = false;
-        isSpinning = false;
-      }, 2000);
+        if (!isSpinning) {
+          statusText.innerText = "法陣已就緒，請再次啟動！ ☯️";
+        }
+      }, 3000);
     }
 
     window.onload = fetchMemeList;
