@@ -12,7 +12,6 @@
     }
 
     body {
-      /* 暗黑仙俠：套用正確的 bg.jpg 檔名與深色半透明遮罩 */
       background: linear-gradient(rgba(8, 11, 14, 0.85), rgba(8, 11, 14, 0.85)), 
                   url("bg.jpg") no-repeat center center fixed;
       background-size: cover;
@@ -48,7 +47,7 @@
       margin-top: 5px;
     }
 
-    /* 🎰 水墨金屬拉霸視窗 */
+    /* 🎰 法陣主視窗 */
     .slot-machine-container {
       width: 100%;
       max-width: 480px;
@@ -71,7 +70,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 12px;
+      padding: 16px;
+      position: relative;
     }
 
     img {
@@ -81,18 +81,24 @@
       object-fit: contain;
     }
 
-    /* 🎰 無限滾動動畫 */
-    .spinning {
-      animation: slotSpin 0.12s linear infinite;
-      filter: blur(3px);
+    /* 📜 中間文字轉動動畫與樣式 */
+    .spinning-text {
+      font-size: 1.35rem;
+      font-weight: bold;
+      color: #38bdf8;
+      text-shadow: 0 0 15px rgba(56, 189, 248, 0.8);
+      text-align: center;
+      line-height: 1.6;
+      padding: 0 20px;
+      animation: textPulse 0.6s infinite alternate;
     }
 
-    @keyframes slotSpin {
-      0% { transform: translateY(-100%); }
-      100% { transform: translateY(100%); }
+    @keyframes textPulse {
+      0% { opacity: 0.7; transform: scale(0.98); }
+      100% { opacity: 1; transform: scale(1.02); }
     }
 
-    /* 📜 無厘頭文字顯示區（位於圖片下方） */
+    /* 📜 底部提示文字區 */
     .status-container {
       width: 100%;
       max-width: 480px;
@@ -200,14 +206,15 @@
     <div class="subtitle">— 職場萬劫不復，唯有抽籤渡化 —</div>
   </div>
 
-  <!-- 🎰 拉霸視窗 -->
+  <!-- 🎰 主視窗：運轉時顯示文字，煞車時顯示圖片 -->
   <div class="slot-machine-container">
-    <div class="slot-screen">
+    <div class="slot-screen" id="slot-screen">
+      <div id="center-text" class="spinning-text">☯️ 靜候召喚...</div>
       <img id="meme" src="" alt="仙俠籤圖" style="display: none;">
     </div>
   </div>
 
-  <!-- 📜 文字顯示區（不擋圖） -->
+  <!-- 📜 底部狀態區 -->
   <div class="status-container">
     <div id="status-text">請拉動把手，啟動渡劫法陣 ☯️</div>
   </div>
@@ -231,6 +238,7 @@
     let lastIndex = -1;
     let isSpinning = false;
     let textInterval = null;
+    let currentText = "";
 
     // 🤪 仙俠修仙 × 職場無厘頭文字庫
     const xianxiaTexts = [
@@ -270,7 +278,6 @@
       }
     }
 
-    // 手動控制：啟動 vs 停止
     function toggleSlot() {
       if (memesList.length === 0) return;
 
@@ -281,45 +288,52 @@
       }
     }
 
-    // 啟動滾動
+    // 啟動：隱藏圖片，開啟文字轉動
     function startSpinning() {
       isSpinning = true;
       const drawBtn = document.getElementById("draw-btn");
       const lever = document.getElementById("lever");
       const imgElement = document.getElementById("meme");
+      const centerText = document.getElementById("center-text");
+      const statusText = document.getElementById("status-text");
 
-      // 把手動畫
+      // 把手拉下動畫
       lever.classList.add("lever-pull");
       setTimeout(() => lever.classList.remove("lever-pull"), 400);
 
-      // 開啟圖片滾動
-      imgElement.classList.add("spinning");
-      imgElement.style.display = "block";
+      // 1. 隱藏圖片，顯示中央文字
+      imgElement.style.display = "none";
+      centerText.style.display = "block";
 
-      // 切換按鈕狀態
+      // 2. 切換按鈕狀態
       drawBtn.innerText = "🛑 煞車！開箱結緣";
       drawBtn.classList.add("active-stop");
 
-      // 立即顯示第一句
-      const randomText = xianxiaTexts[Math.floor(Math.random() * xianxiaTexts.length)];
-      document.getElementById("status-text").innerText = randomText;
+      // 3. 立即切換第一句文字
+      updateRandomText();
+      statusText.innerText = "天機運轉中... 每3秒變換心法 ⚡";
 
-      // 跑動無厘頭文字：設定為每 3000ms (3秒) 換下一句
+      // 4. 文字轉動：每 3 秒更換一次無厘頭文字
       textInterval = setInterval(() => {
-        const randomText = xianxiaTexts[Math.floor(Math.random() * xianxiaTexts.length)];
-        document.getElementById("status-text").innerText = randomText;
+        updateRandomText();
       }, 3000);
     }
 
-    // 停止滾動並開牌
+    function updateRandomText() {
+      currentText = xianxiaTexts[Math.floor(Math.random() * xianxiaTexts.length)];
+      document.getElementById("center-text").innerText = currentText;
+    }
+
+    // 停止：隱藏文字，顯示最終抽到的梗圖
     function stopSpinning() {
       const drawBtn = document.getElementById("draw-btn");
       const imgElement = document.getElementById("meme");
+      const centerText = document.getElementById("center-text");
       const statusText = document.getElementById("status-text");
 
       clearInterval(textInterval);
 
-      // 隨機選圖
+      // 1. 隨機選圖
       let randomIndex;
       do {
         randomIndex = Math.floor(Math.random() * memesList.length);
@@ -328,18 +342,20 @@
 
       const selectedImgSrc = memesList[randomIndex];
       imgElement.src = selectedImgSrc;
-      imgElement.classList.remove("spinning"); // 停止滾動動畫
 
-      // 抽中的無厘頭文字靜止顯示 3 秒
-      const finalRandomText = xianxiaTexts[Math.floor(Math.random() * xianxiaTexts.length)];
-      statusText.innerText = `✨ 結緣成功：${finalRandomText}`;
+      // 2. 隱藏轉動文字，顯現梗圖
+      centerText.style.display = "none";
+      imgElement.style.display = "block";
 
-      // 重置按鈕狀態
+      // 3. 底部顯示當前定格的文字，定格 3 秒
+      statusText.innerText = `✨ 結緣成功：${currentText}`;
+
+      // 4. 重置按鈕狀態
       drawBtn.innerText = "啟動法陣 ⚡";
       drawBtn.classList.remove("active-stop");
       isSpinning = false;
 
-      // 3 秒後恢復預設提示文字
+      // 5. 3 秒後恢復預設提示文字
       setTimeout(() => {
         if (!isSpinning) {
           statusText.innerText = "法陣已就緒，請再次啟動！ ☯️";
