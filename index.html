@@ -25,6 +25,32 @@
       font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
       padding: 20px;
       overflow-x: hidden;
+      position: relative;
+    }
+
+    /* 🌧️ 雷雨 Canvas 背景畫布 */
+    #weather-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ⚡ 閃電全螢幕白光特效 */
+    .lightning-flash {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255, 255, 255, 0.25);
+      pointer-events: none;
+      opacity: 0;
+      z-index: 2;
+      transition: opacity 0.05s ease-out;
     }
 
     /* ↗️ 右上角工具列容器 */
@@ -65,6 +91,7 @@
       align-items: center;
       width: 100%;
       transition: opacity 0.4s ease, transform 0.4s ease;
+      z-index: 10;
     }
 
     /* 隱藏狀態 */
@@ -248,6 +275,10 @@
 </head>
 <body>
 
+  <!-- 🌧️ 雨滴 Canvas 與 ⚡ 閃電遮罩 -->
+  <canvas id="weather-canvas"></canvas>
+  <div id="lightning" class="lightning-flash"></div>
+
   <!-- ↗️ 右上角功能按鈕列 -->
   <div class="top-toolbar">
     <button id="ui-btn" class="toggle-ui-btn" onclick="toggleUI()">👁️ </button>
@@ -330,6 +361,68 @@
       "【正在修改天劫考勤系統...】",
       "【召喚「不想上工」之捲爺魔尊...】"
     ];
+
+    // 🌧️⚡ 下雨 + 閃電動畫引擎
+    function initWeatherEffect() {
+      const canvas = document.getElementById('weather-canvas');
+      const ctx = canvas.getContext('2d');
+      const lightning = document.getElementById('lightning');
+
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      const rainDrops = [];
+      for (let i = 0; i < 150; i++) {
+        rainDrops.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          length: Math.random() * 20 + 10,
+          speed: Math.random() * 10 + 15,
+          opacity: Math.random() * 0.4 + 0.2
+        });
+      }
+
+      function render() {
+        ctx.clearRect(0, 0, width, height);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+        ctx.lineWidth = 1;
+
+        rainDrops.forEach(drop => {
+          ctx.beginPath();
+          ctx.moveTo(drop.x, drop.y);
+          ctx.lineTo(drop.x - 2, drop.y + drop.length);
+          ctx.stroke();
+
+          drop.y += drop.speed;
+          drop.x -= 1;
+
+          if (drop.y > height) {
+            drop.y = -drop.length;
+            drop.x = Math.random() * width;
+          }
+        });
+
+        if (Math.random() < 0.015) {
+          lightning.style.opacity = '1';
+          setTimeout(() => { lightning.style.opacity = '0'; }, 60);
+          setTimeout(() => { 
+            if (Math.random() < 0.5) {
+              lightning.style.opacity = '0.8';
+              setTimeout(() => { lightning.style.opacity = '0'; }, 40);
+            }
+          }, 100);
+        }
+
+        requestAnimationFrame(render);
+      }
+
+      render();
+    }
 
     // 👁️ 隱藏 / 顯示 UI 邏輯
     function toggleUI() {
@@ -465,7 +558,10 @@
       }, 3000);
     }
 
-    window.onload = fetchMemeList;
+    window.onload = () => {
+      fetchMemeList();
+      initWeatherEffect();
+    };
   </script>
 </body>
 </html>
