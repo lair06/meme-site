@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>上班厭世梗圖抽取器 💼</title>
+  <title>大雜燴一番賞 🎰 - 職場厭世抽獎機</title>
   <style>
     * {
       box-sizing: border-box;
@@ -12,110 +12,185 @@
     }
 
     body {
-      /* 深邃質感暗色背景搭配微弱漸層 */
-      background: radial-gradient(circle at 50% 20%, #1e1e24 0%, #0d0d11 100%);
-      color: #f1f5f9;
+      background: radial-gradient(circle at 50% 30%, #2b1055 0%, #0f0c29 100%);
+      color: #ffffff;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      padding: 24px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      padding: 20px;
       overflow-x: hidden;
     }
 
     h1 {
-      font-size: 1.35rem;
-      margin-bottom: 24px;
-      color: #94a3b8;
-      font-weight: 500;
-      letter-spacing: 0.05em;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+      color: #ffd700;
+      text-shadow: 0 0 12px rgba(255, 215, 0, 0.6), 0 0 20px rgba(255, 0, 128, 0.4);
+      letter-spacing: 0.08em;
+      text-align: center;
     }
 
-    .meme-container {
+    /* 🎰 拉霸機外框視窗 */
+    .slot-machine-container {
       width: 100%;
-      max-width: 480px;
-      height: 60vh;
-      max-height: 480px;
+      max-width: 450px;
+      height: 380px;
+      background: #181528;
+      border: 4px solid #ff007f;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(255, 0, 127, 0.4), inset 0 0 15px rgba(0, 0, 0, 0.8);
+      position: relative;
+      overflow: hidden; /* 隱藏滾出區域 */
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-bottom: 32px;
-      position: relative;
-      /* 毛玻璃外框效果 */
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 20px;
-      padding: 16px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      margin-bottom: 25px;
+    }
+
+    /* 圖片顯示區塊 */
+    .slot-screen {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
     }
 
     img {
       max-width: 100%;
       max-height: 100%;
-      width: auto;
-      height: auto;
-      border-radius: 12px;
+      border-radius: 10px;
       object-fit: contain;
-      /* 淡入動畫 */
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     }
 
-    /* 圖片淡出與放大的動態效果 */
-    .fade-out {
-      opacity: 0;
-      transform: scale(0.96);
+    /* 🎰 拉霸滾動動畫 */
+    .spinning {
+      animation: slotSpin 0.15s linear infinite;
+      filter: blur(2px); /* 滾動時的動態模糊 */
     }
 
-    button {
-      /* 絢麗漸層按鈕 */
-      background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    @keyframes slotSpin {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+
+    /* 🤪 無厘頭文字顯示 */
+    #status-text {
+      position: absolute;
+      bottom: 15px;
+      background: rgba(0, 0, 0, 0.85);
+      border: 1px solid #ffd700;
+      color: #00ffff;
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      letter-spacing: 0.05em;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+      text-align: center;
+      max-width: 90%;
+      z-index: 10;
+    }
+
+    /* 🎰 操控區（含把手） */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    /* 按鈕樣式 */
+    .spin-btn {
+      background: linear-gradient(135deg, #ff007f 0%, #7928ca 100%);
       color: #ffffff;
-      border: none;
-      padding: 16px 36px;
-      font-size: 17px;
-      font-weight: 600;
-      letter-spacing: 0.03em;
+      border: 2px solid #ffd700;
+      padding: 16px 32px;
+      font-size: 1.1rem;
+      font-weight: bold;
       border-radius: 50px;
       cursor: pointer;
-      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.35);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    button:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 30px rgba(168, 85, 247, 0.5);
-    }
-
-    button:active {
-      transform: translateY(1px) scale(0.98);
-      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-    }
-
-    #loading {
-      font-size: 0.95rem;
-      color: #64748b;
-      position: absolute;
-      font-weight: 400;
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.5);
+      transition: all 0.2s ease;
       letter-spacing: 0.05em;
+    }
+
+    .spin-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+    }
+
+    .spin-btn:active {
+      transform: scale(0.95);
+    }
+
+    .spin-btn:disabled {
+      background: #555;
+      border-color: #888;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    /* 🕹️ 視覺把手 (Lever) */
+    .lever-container {
+      width: 20px;
+      height: 80px;
+      background: #333;
+      border-radius: 10px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .lever-stick {
+      width: 8px;
+      height: 60px;
+      background: linear-gradient(to right, #ccc, #fff, #888);
+      position: absolute;
+      top: 10px;
+      transform-origin: bottom center;
+      transition: transform 0.3s ease;
+    }
+
+    .lever-ball {
+      width: 24px;
+      height: 24px;
+      background: radial-gradient(circle at 30% 30%, #ff4d4d, #990000);
+      border-radius: 50%;
+      position: absolute;
+      top: -12px;
+      left: -8px;
+      box-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+    }
+
+    /* 把手拉下動畫 */
+    .lever-pull .lever-stick {
+      transform: rotateX(60deg) scaleY(0.5);
     }
   </style>
 </head>
 <body>
 
-  <h1>💼 今天又是不想上班的一天...</h1>
+  <h1>🎪 大雜燴一番賞 🎰</h1>
 
-  <div class="meme-container">
-    <div id="loading">載入圖片庫中... 🎲</div>
-    <img id="meme" src="" alt="上班厭世梗圖" class="fade-out" style="display: none;">
+  <div class="slot-machine-container">
+    <div class="slot-screen">
+      <img id="meme" src="" alt="一番賞籤圖" style="display: none;">
+    </div>
+    <div id="status-text">準備好開抽了嗎？ 🎲</div>
   </div>
 
-  <button onclick="getRandomMeme()">再抽一張厭世圖 😮‍💨</button>
+  <div class="controls">
+    <button id="draw-btn" class="spin-btn" onclick="pullLever()">拉動把手抽一張 🎟️</button>
+    <div id="lever" class="lever-container">
+      <div class="lever-stick">
+        <div class="lever-ball"></div>
+      </div>
+    </div>
+  </div>
 
   <script>
     const username = "lair06";
@@ -124,63 +199,93 @@
 
     let memesList = [];
     let lastIndex = -1;
+    let isSpinning = false;
+
+    // 🤪 無厘頭文字庫
+    const funnyTexts = [
+      "【從同事內褲挖掘中...】",
+      "【翻閱董事長的皮夾...】",
+      "【6F男廁馬桶尋找中...】",
+      "【正在偷翻人資的離職面談紀錄...】",
+      "【竊取隔壁桌剩下的午餐...】",
+      "【正在茶水間監聽八卦...】",
+      "【潛入主管的夢境尋找解答...】",
+      "【正在計算今天發呆的時間價值...】",
+      "【從影印機夾紙堆中抽取中...】",
+      "【偷偷修改考勤系統中...】",
+      "【正在召喚特休假期惡魔...】",
+      "【幫老闆的咖啡加料中...】",
+      "【正在搜尋「如何不留痕跡離職」...】"
+    ];
 
     async function fetchMemeList() {
-      const loadingElement = document.getElementById("loading");
+      const statusText = document.getElementById("status-text");
       try {
         const apiUrl = `https://api.github.com/repos/${username}/${repo}/contents/${encodeURIComponent(folderPath)}`;
         const response = await fetch(apiUrl);
-        
         if (!response.ok) throw new Error("無法讀取 GitHub 資料夾");
 
         const data = await response.json();
-
         memesList = data
           .filter(file => file.type === "file" && /\.(jpg|jpeg|png|gif|webp)$/i.test(file.name))
           .map(file => file.path);
 
         if (memesList.length > 0) {
-          getRandomMeme();
+          statusText.innerText = "賞籤加載完畢！請拉動把手 🎯";
         } else {
-          loadingElement.innerText = "資料夾內沒有找到圖片檔！";
+          statusText.innerText = "資料夾內沒有賞籤！";
         }
       } catch (error) {
         console.error(error);
-        loadingElement.innerText = "讀取圖片失敗，請確認 GitHub 設定";
+        statusText.innerText = "讀取連線失敗，請檢查設定！";
       }
     }
 
-    function getRandomMeme() {
-      if (memesList.length === 0) return;
+    function pullLever() {
+      if (isSpinning || memesList.length === 0) return;
+      isSpinning = true;
 
+      const drawBtn = document.getElementById("draw-btn");
+      const lever = document.getElementById("lever");
       const imgElement = document.getElementById("meme");
-      const loadingElement = document.getElementById("loading");
+      const statusText = document.getElementById("status-text");
 
-      // 動態漸隱舊圖
-      imgElement.classList.add("fade-out");
-      loadingElement.innerText = "抽取厭世能量中... 🎲";
-      loadingElement.style.display = "block";
+      drawBtn.disabled = true;
 
+      // 1. 動態拉下把手
+      lever.classList.add("lever-pull");
+      setTimeout(() => lever.classList.remove("lever-pull"), 400);
+
+      // 2. 開啟拉霸滾動動畫
+      imgElement.classList.add("spinning");
+      imgElement.style.display = "block";
+
+      // 3. 輪播無厘頭文字
+      let textInterval = setInterval(() => {
+        const randomText = funnyTexts[Math.floor(Math.random() * funnyTexts.length)];
+        statusText.innerText = randomText;
+      }, 150);
+
+      // 4. 隨機決定抽中的圖片
       let randomIndex;
       do {
         randomIndex = Math.floor(Math.random() * memesList.length);
       } while (randomIndex === lastIndex && memesList.length > 1);
-
       lastIndex = randomIndex;
-      const selectedImgSrc = memesList[randomIndex];
 
+      const selectedImgSrc = memesList[randomIndex];
       const tempImg = new Image();
       tempImg.src = selectedImgSrc;
-      tempImg.onload = () => {
+
+      // 5. 滾動 2 秒後精準「煞車」停止
+      setTimeout(() => {
+        clearInterval(textInterval);
         imgElement.src = selectedImgSrc;
-        loadingElement.style.display = "none";
-        imgElement.style.display = "block";
-        
-        // 延遲微調，呈現滑順淡入
-        setTimeout(() => {
-          imgElement.classList.remove("fade-out");
-        }, 50);
-      };
+        imgElement.classList.remove("spinning"); // 停止動畫
+        statusText.innerText = "🎉 恭喜抽中大獎！(吧)";
+        drawBtn.disabled = false;
+        isSpinning = false;
+      }, 2000);
     }
 
     window.onload = fetchMemeList;
