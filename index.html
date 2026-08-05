@@ -29,9 +29,9 @@
     }
     .meme-container {
       width: 100%;
-      max-width: 500px; /* 限制容器最大寬度，避免圖片太大 */
+      max-width: 500px;
       height: 60vh;
-      max-height: 500px; /* 限制容器最大高度 */
+      max-height: 500px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -45,7 +45,7 @@
       height: auto;
       border-radius: 12px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
-      object-fit: contain; /* 確保圖片不變形且完整顯示 */
+      object-fit: contain;
     }
     button {
       background-color: #4e542e;
@@ -77,46 +77,80 @@
   <h1>💼 今天又是不想上班的一天...</h1>
 
   <div class="meme-container">
-    <div id="loading">抽取厭世能量中... 🎲</div>
+    <div id="loading">載入圖片庫中... 🎲</div>
     <img id="meme" src="" alt="上班厭世梗圖" style="display: none;">
   </div>
 
   <button onclick="getRandomMeme()">再抽一張厭世圖 😮‍💨</button>
 
   <script>
+    // GitHub API 相關設定
+    const username = "lair06";
+    const repo = "meme-site";
+    const folderPath = "meme picture";
+
+    let memesList = [];
+    let lastIndex = -1;
+
+    // 頁面載入時，自動向 GitHub 抓取資料夾內的圖片檔名清單
+    async function fetchMemeList() {
+      const loadingElement = document.getElementById("loading");
+      try {
+        const apiUrl = `https://api.github.com/repos/${username}/${repo}/contents/${encodeURIComponent(folderPath)}`;
+        const response = await fetch(apiUrl);
+        
+        if (!response.ok) throw new Error("無法讀取 GitHub 資料夾");
+
+        const data = await response.json();
+
+        // 篩選出圖檔（jpg, jpeg, png, gif, webp）
+        memesList = data
+          .filter(file => file.type === "file" && /\.(jpg|jpeg|png|gif|webp)$/i.test(file.name))
+          .map(file => file.path);
+
+        if (memesList.length > 0) {
+          getRandomMeme();
+        } else {
+          loadingElement.innerText = "資料夾內沒有找到圖片檔！";
+        }
+      } catch (error) {
+        console.error(error);
+        loadingElement.innerText = "讀取圖片失敗，請確認 GitHub 設定";
+      }
+    }
+
+    // 隨機抽取圖片
     function getRandomMeme() {
+      if (memesList.length === 0) return;
+
       const imgElement = document.getElementById("meme");
       const loadingElement = document.getElementById("loading");
 
+      loadingElement.innerText = "抽取厭世能量中... 🎲";
       loadingElement.style.display = "block";
       imgElement.style.display = "none";
 
-      // 產生隨機數，確保不會用到快取，圖片尺寸嚴格限制在 500x500 內（載入超快）
-      const randomSeed = Math.floor(Math.random() * 1000);
-      const imageUrl = `https://picsum.photos/seed/${randomSeed}/500/500`;
+      let randomIndex;
+      // 避免連續兩次抽到相同的圖片
+      do {
+        randomIndex = Math.floor(Math.random() * memesList.length);
+      } while (randomIndex === lastIndex && memesList.length > 1);
 
-      // 建立預載物物件，確保載入成功才顯示
-      const newImg = new Image();
-      newImg.src = imageUrl;
+      lastIndex = randomIndex;
+      const selectedImgSrc = memesList[randomIndex];
 
-      newImg.onload = () => {
-        imgElement.src = imageUrl;
+      // 預載圖片確保載入完成後流暢顯示
+      const tempImg = new Image();
+      tempImg.src = selectedImgSrc;
+      tempImg.onload = () => {
+        imgElement.src = selectedImgSrc;
         loadingElement.style.display = "none";
         imgElement.style.display = "block";
       };
-
-      // 萬一 3 秒內沒反應，自動補救
-      setTimeout(() => {
-        if (imgElement.style.display === "none") {
-          imgElement.src = "https://picsum.photos/500/500";
-          loadingElement.style.display = "none";
-          imgElement.style.display = "block";
-        }
-      }, 3000);
     }
 
-    // 第一次進頁面自動隨機顯示
-    window.onload = getRandomMeme;
+    // 初始化：載入動態清單
+    window.onload = fetchMemeList;
   </script>
 </body>
 </html>
