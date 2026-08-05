@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>大雜燴轉盤 ⚡</title>
+  <title>上班很難 笑個好嗎 ⚡</title>
   <style>
     * {
       box-sizing: border-box;
@@ -12,7 +12,7 @@
     }
 
     body {
-      /* 🌟 背景遮罩調亮：大幅降低黑罩濃度，讓 bg.jpg 更清晰 */
+      /* 🌟 背景遮罩保持清晰 */
       background: linear-gradient(rgba(15, 23, 42, 0.3), rgba(15, 23, 42, 0.3)), 
                   url("bg.jpg") no-repeat center center fixed;
       background-size: cover;
@@ -27,12 +27,19 @@
       overflow-x: hidden;
     }
 
-    /* 🔊 音樂控制按鈕 */
-    .audio-control {
+    /* ↗️ 右上角工具列容器 */
+    .top-toolbar {
       position: fixed;
       top: 15px;
       right: 15px;
-      background: rgba(15, 23, 42, 0.8);
+      display: flex;
+      gap: 10px;
+      z-index: 100;
+    }
+
+    /* 🔊 & 👁️ 通用頂部按鈕樣式 */
+    .audio-control, .toggle-ui-btn {
+      background: rgba(15, 23, 42, 0.85);
       border: 1px solid #38bdf8;
       color: #38bdf8;
       padding: 8px 14px;
@@ -41,7 +48,30 @@
       font-size: 0.85rem;
       font-weight: bold;
       box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
-      z-index: 100;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(4px);
+    }
+
+    .audio-control:hover, .toggle-ui-btn:hover {
+      background: #38bdf8;
+      color: #0f172a;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.8);
+    }
+
+    /* 📦 主要是需要被隱藏的 UI 包裹區塊 */
+    .ui-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    /* 隱藏狀態 */
+    .ui-hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.96);
     }
 
     /* 頂部標題 */
@@ -218,38 +248,44 @@
 </head>
 <body>
 
-  <!-- 🎵 音訊元素 (背景音樂 + 效果音) -->
-  <button id="bgm-btn" class="audio-control" onclick="toggleBGM()">🎵 </button>
+  <!-- ↗️ 右上角功能按鈕列 -->
+  <div class="top-toolbar">
+    <button id="ui-btn" class="toggle-ui-btn" onclick="toggleUI()">👁️ </button>
+    <button id="bgm-btn" class="audio-control" onclick="toggleBGM()">🎵 </button>
+  </div>
+
+  <!-- 🎵 音訊效果 -->
   <audio id="bgm" loop src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=chinamusic-113579.mp3"></audio>
   <audio id="sfx-spin" src="https://assets.mixkit.co/active_storage/sfx/2578/2578-preview.mp3"></audio>
   <audio id="sfx-stop" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
 
-  <div class="header-banner">
-    <h1>六人成虎 ‧ 渡劫法陣 ⚡</h1>
-    <div class="subtitle">— 職場萬劫不復，唯有抽籤渡化 —</div>
-  </div>
-
-  <!-- 🎰 拉霸視窗 -->
-  <div class="slot-machine-container">
-    <div class="slot-screen">
-      <!-- 轉動時顯示高速切換文字 -->
-      <div id="slot-text-spin" style="display: none;">☯️ 陣法啟動 ☯️</div>
-      <!-- 停止時顯示開牌圖片 -->
-      <img id="meme" src="" alt="仙俠籤圖" style="display: none;">
+  <!-- 📦 主要介面區塊 -->
+  <div id="main-ui" class="ui-wrapper">
+    <div class="header-banner">
+      <h1>六人成虎 ‧ 渡劫法陣 ⚡</h1>
+      <div class="subtitle">— 職場萬劫不復，唯有抽籤渡化 —</div>
     </div>
-  </div>
 
-  <!-- 📜 文字顯示區 -->
-  <div class="status-container">
-    <div id="status-text">請拉動把手，啟動渡劫法陣 ☯️</div>
-  </div>
+    <!-- 🎰 拉霸視窗 -->
+    <div class="slot-machine-container">
+      <div class="slot-screen">
+        <div id="slot-text-spin" style="display: none;">☯️ 陣法啟動 ☯️</div>
+        <img id="meme" src="" alt="仙俠籤圖" style="display: none;">
+      </div>
+    </div>
 
-  <!-- 🎮 控制區 -->
-  <div class="controls">
-    <button id="draw-btn" class="spin-btn" onclick="toggleSlot()">啟動法陣 ⚡</button>
-    <div id="lever" class="lever-container">
-      <div class="lever-stick">
-        <div class="lever-ball"></div>
+    <!-- 📜 文字顯示區 -->
+    <div class="status-container">
+      <div id="status-text">請拉動把手，啟動渡劫法陣 ☯️</div>
+    </div>
+
+    <!-- 🎮 控制區 -->
+    <div class="controls">
+      <button id="draw-btn" class="spin-btn" onclick="toggleSlot()">啟動法陣 ⚡</button>
+      <div id="lever" class="lever-container">
+        <div class="lever-stick">
+          <div class="lever-ball"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -264,8 +300,9 @@
     let isSpinning = false;
     let textInterval = null;
     let slotTextInterval = null;
+    let isUiHidden = false;
 
-    // ⚡ 轉盤中央高速滾動的仙俠招式/詞彙
+    // ⚡ 轉盤中央高速滾動招式
     const spinFastTexts = [
       "⚡ 萬劍歸宗 ⚡",
       "🔥 渡劫天火 🔥",
@@ -281,18 +318,34 @@
 
     // 🤪 下方無厘頭文字庫
     const xianxiaTexts = [
-      "【正在偷翻掌門人的內褲...】",
+      "【正在偷翻???的內褲...】",
       "【深入6F洗手間渡劫中...】",
-      "【偷看長老皮夾裡的靈石數量...】",
-      "【強行吸收隔壁師兄的加班廢氣...】",
-      "【正在審查同門師弟的離職心法...】",
+      "【偷看龜董皮夾裡的靈石數量...】",
+      "【強行吸收隔壁同仁的加班廢氣...】",
+      "【正在審查同門丞董的離職心法...】",
       "【茶水間偷聽仙界密辛中...】",
-      "【潛入老祖夢境索取特休假...】",
+      "【潛入主管夢境索取特休假...】",
       "【計算今日偷懶獲得的修為...】",
-      "【正在幫掌門的靈丹偷加廢料...】",
+      "【正在幫長官的靈丹偷加廢料...】",
       "【正在修改天劫考勤系統...】",
-      "【召喚「不想上工」之太古魔尊...】"
+      "【召喚「不想上工」之捲爺魔尊...】"
     ];
+
+    // 👁️ 隱藏 / 顯示 UI 邏輯
+    function toggleUI() {
+      const mainUi = document.getElementById("main-ui");
+      const uiBtn = document.getElementById("ui-btn");
+
+      if (!isUiHidden) {
+        mainUi.classList.add("ui-hidden");
+        uiBtn.innerText = "👁️";
+        isUiHidden = true;
+      } else {
+        mainUi.classList.remove("ui-hidden");
+        uiBtn.innerText = "👁️";
+        isUiHidden = false;
+      }
+    }
 
     // 🎵 BGM 控制
     let isPlayingBGM = false;
@@ -301,11 +354,11 @@
       const btn = document.getElementById("bgm-btn");
       if (!isPlayingBGM) {
         bgm.play();
-        btn.innerText = "🔊 靜音 BGM";
+        btn.innerText = "🔊";
         isPlayingBGM = true;
       } else {
         bgm.pause();
-        btn.innerText = "🎵 播放仙俠BGM";
+        btn.innerText = "🎵";
         isPlayingBGM = false;
       }
     }
@@ -343,7 +396,6 @@
       }
     }
 
-    // 啟動滾動
     function startSpinning() {
       isSpinning = true;
       const drawBtn = document.getElementById("draw-btn");
@@ -351,28 +403,22 @@
       const imgElement = document.getElementById("meme");
       const slotTextSpin = document.getElementById("slot-text-spin");
 
-      // 播放音效
       document.getElementById("sfx-spin").play();
 
-      // 把手動畫
       lever.classList.add("lever-pull");
       setTimeout(() => lever.classList.remove("lever-pull"), 400);
 
-      // 隱藏圖片，顯示中央高速轉動文字
       imgElement.style.display = "none";
       slotTextSpin.style.display = "block";
 
-      // 1. 中央文字超高速閃爍切換 (80ms)
       slotTextInterval = setInterval(() => {
         const randomSpinText = spinFastTexts[Math.floor(Math.random() * spinFastTexts.length)];
         slotTextSpin.innerText = randomSpinText;
       }, 80);
 
-      // 切換按鈕狀態
-      drawBtn.innerText = "🛑 煞車！開箱結緣";
+      drawBtn.innerText = "🛑 吸收天地靈氣!強行突破!";
       drawBtn.classList.add("active-stop");
 
-      // 2. 下方無厘頭文字：每 3 秒換一句
       const randomText = xianxiaTexts[Math.floor(Math.random() * xianxiaTexts.length)];
       document.getElementById("status-text").innerText = randomText;
 
@@ -382,23 +428,19 @@
       }, 3000);
     }
 
-    // 停止滾動並開牌
     function stopSpinning() {
       const drawBtn = document.getElementById("draw-btn");
       const imgElement = document.getElementById("meme");
       const slotTextSpin = document.getElementById("slot-text-spin");
       const statusText = document.getElementById("status-text");
 
-      // 播放停止音效
       document.getElementById("sfx-stop").play();
 
       clearInterval(textInterval);
       clearInterval(slotTextInterval);
 
-      // 隱藏轉動文字，顯示定格圖片
       slotTextSpin.style.display = "none";
 
-      // 隨機選圖
       let randomIndex;
       do {
         randomIndex = Math.floor(Math.random() * memesList.length);
@@ -409,16 +451,13 @@
       imgElement.src = selectedImgSrc;
       imgElement.style.display = "block";
 
-      // 結緣文字停留展示 3 秒
       const finalRandomText = xianxiaTexts[Math.floor(Math.random() * xianxiaTexts.length)];
-      statusText.innerText = `✨ 結緣成功：${finalRandomText}`;
+      statusText.innerText = `✨ 渡劫成功：${finalRandomText}`;
 
-      // 重置按鈕
       drawBtn.innerText = "啟動法陣 ⚡";
       drawBtn.classList.remove("active-stop");
       isSpinning = false;
 
-      // 3 秒後恢復預設提示
       setTimeout(() => {
         if (!isSpinning) {
           statusText.innerText = "法陣已就緒，請再次啟動！ ☯️";
