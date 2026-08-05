@@ -12,9 +12,9 @@
     }
 
     body {
-      /* 暗黑仙俠：套用根目錄 bg 背景圖與深色遮罩 */
+      /* 暗黑仙俠：套用正確的 bg.jpg 檔名與深色半透明遮罩 */
       background: linear-gradient(rgba(8, 11, 14, 0.85), rgba(8, 11, 14, 0.85)), 
-                  url("bg") no-repeat center center fixed;
+                  url("bg.jpg") no-repeat center center fixed;
       background-size: cover;
       color: #e2e8f0;
       display: flex;
@@ -53,7 +53,7 @@
       width: 100%;
       max-width: 480px;
       height: 380px;
-      background: #0f172a;
+      background: rgba(15, 23, 42, 0.85);
       border: 3px solid #475569;
       border-radius: 16px;
       box-shadow: 0 0 30px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(0, 0, 0, 0.9), 0 0 15px rgba(56, 189, 248, 0.2);
@@ -62,6 +62,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      backdrop-filter: blur(4px);
     }
 
     .slot-screen {
@@ -91,7 +92,7 @@
       100% { transform: translateY(100%); }
     }
 
-    /* 📜 無厘頭文字顯示區（移至圖片下方，不遮擋圖片） */
+    /* 📜 無厘頭文字顯示區（位於圖片下方） */
     .status-container {
       width: 100%;
       max-width: 480px;
@@ -299,11 +300,15 @@
       drawBtn.innerText = "🛑 煞車！開箱結緣";
       drawBtn.classList.add("active-stop");
 
-      // 跑動無厘頭文字
+      // 立即顯示第一句
+      const randomText = xianxiaTexts[Math.floor(Math.random() * xianxiaTexts.length)];
+      document.getElementById("status-text").innerText = randomText;
+
+      // 跑動無厘頭文字：設定為每 3000ms (3秒) 換下一句
       textInterval = setInterval(() => {
         const randomText = xianxiaTexts[Math.floor(Math.random() * xianxiaTexts.length)];
         document.getElementById("status-text").innerText = randomText;
-      }, 120);
+      }, 3000);
     }
 
     // 停止滾動並開牌
