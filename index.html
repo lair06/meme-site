@@ -84,76 +84,7 @@
       box-shadow: 0 0 15px rgba(56, 189, 248, 0.8);
     }
 
-    /* 🎵 音樂下拉選單容器 */
-    .bgm-dropdown-container {
-      position: relative;
-    }
-
-    .bgm-menu {
-      display: none;
-      position: absolute;
-      top: 42px;
-      right: 0;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid #38bdf8;
-      border-radius: 12px;
-      padding: 10px;
-      width: 175px;
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
-      backdrop-filter: blur(8px);
-      flex-direction: column;
-      gap: 6px;
-      z-index: 110;
-      animation: fadeIn 0.2s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-5px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .bgm-menu.show {
-      display: flex;
-    }
-
-    .bgm-menu-item, .bgm-track-btn {
-      background: rgba(30, 41, 59, 0.8);
-      border: 1px solid #475569;
-      color: #e2e8f0;
-      padding: 8px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.82rem;
-      text-align: left;
-      transition: all 0.2s ease;
-      font-weight: bold;
-    }
-
-    .bgm-menu-item:hover, .bgm-track-btn:hover {
-      border-color: #38bdf8;
-      color: #38bdf8;
-      background: rgba(56, 189, 248, 0.15);
-    }
-
-    .bgm-track-btn.active {
-      border-color: #38bdf8;
-      background: rgba(56, 189, 248, 0.25);
-      color: #7dd3fc;
-    }
-
-    .menu-divider {
-      border: none;
-      border-top: 1px solid #334155;
-      margin: 2px 0;
-    }
-
-    .menu-label {
-      font-size: 0.72rem;
-      color: #94a3b8;
-      padding: 2px 4px;
-    }
-
-    /* 📦 主要介面區塊 */
+    /* 📦 主要是需要被隱藏的 UI 包裹區塊 */
     .ui-wrapper {
       display: flex;
       flex-direction: column;
@@ -351,24 +282,11 @@
   <!-- ↗️ 右上角功能按鈕列 -->
   <div class="top-toolbar">
     <button id="ui-btn" class="toggle-ui-btn" onclick="toggleUI()">👁️ </button>
-    
-    <!-- 🎵 音樂下拉選單 -->
-    <div class="bgm-dropdown-container">
-      <button id="bgm-btn" class="audio-control" onclick="toggleBgmMenu()">🎵 </button>
-      <div id="bgm-menu" class="bgm-menu">
-        <button id="bgm-toggle-btn" class="bgm-menu-item" onclick="toggleBGM()">▶️ 播放音樂</button>
-        <hr class="menu-divider">
-        <div class="menu-label">切換仙俠曲目：</div>
-        <button class="bgm-track-btn active" onclick="selectTrack(0, this)">🎼 蜀山仙韻</button>
-        <button class="bgm-track-btn" onclick="selectTrack(1, this)">⚔️ 靈山戰意</button>
-        <button class="bgm-track-btn" onclick="selectTrack(2, this)">🍃 幽谷清風</button>
-        <button class="bgm-track-btn" onclick="selectTrack(3, this)">🪕 古箏渡劫</button>
-      </div>
-    </div>
+    <button id="bgm-btn" class="audio-control" onclick="toggleBGM()">🎵 </button>
   </div>
 
   <!-- 🎵 音訊效果 -->
-  <audio id="bgm" loop src="https://assets.mixkit.co/music/preview/mixkit-oriental-spirit-119.mp3"></audio>
+  <audio id="bgm" loop src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=chinamusic-113579.mp3"></audio>
   <audio id="sfx-spin" src="https://assets.mixkit.co/active_storage/sfx/2578/2578-preview.mp3"></audio>
   <audio id="sfx-stop" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
 
@@ -444,68 +362,6 @@
       "【召喚「不想上工」之捲爺魔尊...】"
     ];
 
-    // 🎶 100% 穩定且開放外連的免費仙俠音樂庫 (Mixkit CDN)
-    const bgmTracks = [
-      "https://assets.mixkit.co/music/preview/mixkit-oriental-spirit-119.mp3",
-      "https://assets.mixkit.co/music/preview/mixkit-ninja-spirit-104.mp3",
-      "https://assets.mixkit.co/music/preview/mixkit-zen-meditation-135.mp3",
-      "https://assets.mixkit.co/music/preview/mixkit-serene-view-443.mp3"
-    ];
-
-    let currentTrackIndex = 0;
-    let isPlayingBGM = false;
-
-    function toggleBgmMenu() {
-      const menu = document.getElementById("bgm-menu");
-      menu.classList.toggle("show");
-    }
-
-    window.addEventListener('click', (e) => {
-      const container = document.querySelector('.bgm-dropdown-container');
-      if (container && !container.contains(e.target)) {
-        document.getElementById("bgm-menu")?.classList.remove("show");
-      }
-    });
-
-    function toggleBGM() {
-      const bgm = document.getElementById("bgm");
-      const toggleBtn = document.getElementById("bgm-toggle-btn");
-      const bgmMainBtn = document.getElementById("bgm-btn");
-
-      if (!isPlayingBGM) {
-        bgm.play().then(() => {
-          toggleBtn.innerText = "⏸️ 關閉音樂";
-          bgmMainBtn.innerText = "🔊 ";
-          isPlayingBGM = true;
-        }).catch(e => {
-          console.warn("Autoplay Error:", e);
-        });
-      } else {
-        bgm.pause();
-        toggleBtn.innerText = "▶️ 播放音樂";
-        bgmMainBtn.innerText = "🎵 ";
-        isPlayingBGM = false;
-      }
-    }
-
-    function selectTrack(index, btnElement) {
-      currentTrackIndex = index;
-      const bgm = document.getElementById("bgm");
-      
-      bgm.pause();
-      bgm.src = bgmTracks[index];
-      bgm.load();
-
-      document.querySelectorAll('.bgm-track-btn').forEach(btn => btn.classList.remove('active'));
-      if (btnElement) btnElement.classList.add('active');
-
-      if (isPlayingBGM) {
-        bgm.play().catch(e => console.log("Play interrupted:", e));
-      } else {
-        toggleBGM();
-      }
-    }
-
     // 🌧️⚡ 下雨 + 閃電動畫引擎
     function initWeatherEffect() {
       const canvas = document.getElementById('weather-canvas');
@@ -575,12 +431,28 @@
 
       if (!isUiHidden) {
         mainUi.classList.add("ui-hidden");
-        uiBtn.innerText = "👁️ ";
+        uiBtn.innerText = "👁️";
         isUiHidden = true;
       } else {
         mainUi.classList.remove("ui-hidden");
-        uiBtn.innerText = "👁️ ";
+        uiBtn.innerText = "👁️";
         isUiHidden = false;
+      }
+    }
+
+    // 🎵 BGM 控制
+    let isPlayingBGM = false;
+    function toggleBGM() {
+      const bgm = document.getElementById("bgm");
+      const btn = document.getElementById("bgm-btn");
+      if (!isPlayingBGM) {
+        bgm.play();
+        btn.innerText = "🔊";
+        isPlayingBGM = true;
+      } else {
+        bgm.pause();
+        btn.innerText = "🎵";
+        isPlayingBGM = false;
       }
     }
 
@@ -624,7 +496,7 @@
       const imgElement = document.getElementById("meme");
       const slotTextSpin = document.getElementById("slot-text-spin");
 
-      document.getElementById("sfx-spin").play().catch(e => {});
+      document.getElementById("sfx-spin").play();
 
       lever.classList.add("lever-pull");
       setTimeout(() => lever.classList.remove("lever-pull"), 400);
@@ -655,7 +527,7 @@
       const slotTextSpin = document.getElementById("slot-text-spin");
       const statusText = document.getElementById("status-text");
 
-      document.getElementById("sfx-stop").play().catch(e => {});
+      document.getElementById("sfx-stop").play();
 
       clearInterval(textInterval);
       clearInterval(slotTextInterval);
