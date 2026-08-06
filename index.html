@@ -84,7 +84,76 @@
       box-shadow: 0 0 15px rgba(56, 189, 248, 0.8);
     }
 
-    /* 📦 主要是需要被隱藏的 UI 包裹區塊 */
+    /* 🎵 音樂下拉選單容器 */
+    .bgm-dropdown-container {
+      position: relative;
+    }
+
+    .bgm-menu {
+      display: none;
+      position: absolute;
+      top: 42px;
+      right: 0;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid #38bdf8;
+      border-radius: 12px;
+      padding: 10px;
+      width: 175px;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+      backdrop-filter: blur(8px);
+      flex-direction: column;
+      gap: 6px;
+      z-index: 110;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .bgm-menu.show {
+      display: flex;
+    }
+
+    .bgm-menu-item, .bgm-track-btn {
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid #475569;
+      color: #e2e8f0;
+      padding: 8px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      text-align: left;
+      transition: all 0.2s ease;
+      font-weight: bold;
+    }
+
+    .bgm-menu-item:hover, .bgm-track-btn:hover {
+      border-color: #38bdf8;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.15);
+    }
+
+    .bgm-track-btn.active {
+      border-color: #38bdf8;
+      background: rgba(56, 189, 248, 0.25);
+      color: #7dd3fc;
+    }
+
+    .menu-divider {
+      border: none;
+      border-top: 1px solid #334155;
+      margin: 2px 0;
+    }
+
+    .menu-label {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      padding: 2px 4px;
+    }
+
+    /* 📦 主要介面區塊 */
     .ui-wrapper {
       display: flex;
       flex-direction: column;
@@ -282,7 +351,20 @@
   <!-- ↗️ 右上角功能按鈕列 -->
   <div class="top-toolbar">
     <button id="ui-btn" class="toggle-ui-btn" onclick="toggleUI()">👁️ </button>
-    <button id="bgm-btn" class="audio-control" onclick="toggleBGM()">🎵 </button>
+    
+    <!-- 🎵 音樂下拉選單 -->
+    <div class="bgm-dropdown-container">
+      <button id="bgm-btn" class="audio-control" onclick="toggleBgmMenu()">🎵 </button>
+      <div id="bgm-menu" class="bgm-menu">
+        <button id="bgm-toggle-btn" class="bgm-menu-item" onclick="toggleBGM()">▶️ 播放音樂</button>
+        <hr class="menu-divider">
+        <div class="menu-label">切換仙俠曲目：</div>
+        <button class="bgm-track-btn active" onclick="selectTrack(0, this)">🎼 仙俠悠揚</button>
+        <button class="bgm-track-btn" onclick="selectTrack(1, this)">⚔️ 靈山渡劫</button>
+        <button class="bgm-track-btn" onclick="selectTrack(2, this)">🍃 幽谷竹笛</button>
+        <button class="bgm-track-btn" onclick="selectTrack(3, this)">🪕 蜀山古箏</button>
+      </div>
+    </div>
   </div>
 
   <!-- 🎵 音訊效果 -->
@@ -362,6 +444,68 @@
       "【召喚「不想上工」之捲爺魔尊...】"
     ];
 
+    // 🎶 多首仙俠 BGM 曲目資料庫
+    const bgmTracks = [
+      "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=chinamusic-113579.mp3",
+      "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a706be.mp3?filename=traditional-chinese-music-10271.mp3",
+      "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=chinese-bamboo-flute-14022.mp3",
+      "https://cdn.pixabay.com/download/audio/2022/10/14/audio_993f309a4b.mp3?filename=chinese-guzheng-12345.mp3"
+    ];
+
+    let currentTrackIndex = 0;
+    let isPlayingBGM = false;
+
+    // 展開 / 收起音樂選單
+    function toggleBgmMenu() {
+      const menu = document.getElementById("bgm-menu");
+      menu.classList.toggle("show");
+    }
+
+    // 點擊選單外部自動關閉下拉選單
+    window.addEventListener('click', (e) => {
+      const container = document.querySelector('.bgm-dropdown-container');
+      if (container && !container.contains(e.target)) {
+        document.getElementById("bgm-menu")?.classList.remove("show");
+      }
+    });
+
+    // 開關播放控制
+    function toggleBGM() {
+      const bgm = document.getElementById("bgm");
+      const toggleBtn = document.getElementById("bgm-toggle-btn");
+      const bgmMainBtn = document.getElementById("bgm-btn");
+
+      if (!isPlayingBGM) {
+        bgm.play().catch(e => console.log("BGM Play prevented:", e));
+        toggleBtn.innerText = "⏸️ 關閉音樂";
+        bgmMainBtn.innerText = "🔊 ";
+        isPlayingBGM = true;
+      } else {
+        bgm.pause();
+        toggleBtn.innerText = "▶️ 播放音樂";
+        bgmMainBtn.innerText = "🎵 ";
+        isPlayingBGM = false;
+      }
+    }
+
+    // 切換曲目
+    function selectTrack(index, btnElement) {
+      currentTrackIndex = index;
+      const bgm = document.getElementById("bgm");
+      bgm.src = bgmTracks[index];
+
+      // 更新選單按鈕高亮樣式
+      document.querySelectorAll('.bgm-track-btn').forEach(btn => btn.classList.remove('active'));
+      if (btnElement) btnElement.classList.add('active');
+
+      // 若原先正在播放，更換後繼續播放；若靜音則自動開始播放
+      if (isPlayingBGM) {
+        bgm.play();
+      } else {
+        toggleBGM();
+      }
+    }
+
     // 🌧️⚡ 下雨 + 閃電動畫引擎
     function initWeatherEffect() {
       const canvas = document.getElementById('weather-canvas');
@@ -431,28 +575,12 @@
 
       if (!isUiHidden) {
         mainUi.classList.add("ui-hidden");
-        uiBtn.innerText = "👁️";
+        uiBtn.innerText = "👁️ ";
         isUiHidden = true;
       } else {
         mainUi.classList.remove("ui-hidden");
-        uiBtn.innerText = "👁️";
+        uiBtn.innerText = "👁️ ";
         isUiHidden = false;
-      }
-    }
-
-    // 🎵 BGM 控制
-    let isPlayingBGM = false;
-    function toggleBGM() {
-      const bgm = document.getElementById("bgm");
-      const btn = document.getElementById("bgm-btn");
-      if (!isPlayingBGM) {
-        bgm.play();
-        btn.innerText = "🔊";
-        isPlayingBGM = true;
-      } else {
-        bgm.pause();
-        btn.innerText = "🎵";
-        isPlayingBGM = false;
       }
     }
 
