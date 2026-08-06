@@ -359,16 +359,16 @@
         <button id="bgm-toggle-btn" class="bgm-menu-item" onclick="toggleBGM()">▶️ 播放音樂</button>
         <hr class="menu-divider">
         <div class="menu-label">切換仙俠曲目：</div>
-        <button class="bgm-track-btn active" onclick="selectTrack(0, this)">🎼 仙俠悠揚</button>
-        <button class="bgm-track-btn" onclick="selectTrack(1, this)">⚔️ 靈山渡劫</button>
-        <button class="bgm-track-btn" onclick="selectTrack(2, this)">🍃 幽谷竹笛</button>
-        <button class="bgm-track-btn" onclick="selectTrack(3, this)">🪕 蜀山古箏</button>
+        <button class="bgm-track-btn active" onclick="selectTrack(0, this)">🎼 蜀山仙韻</button>
+        <button class="bgm-track-btn" onclick="selectTrack(1, this)">⚔️ 靈山戰意</button>
+        <button class="bgm-track-btn" onclick="selectTrack(2, this)">🍃 幽谷清風</button>
+        <button class="bgm-track-btn" onclick="selectTrack(3, this)">🪕 古箏渡劫</button>
       </div>
     </div>
   </div>
 
   <!-- 🎵 音訊效果 -->
-  <audio id="bgm" loop src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=chinamusic-113579.mp3"></audio>
+  <audio id="bgm" loop src="https://assets.mixkit.co/music/preview/mixkit-oriental-spirit-119.mp3"></audio>
   <audio id="sfx-spin" src="https://assets.mixkit.co/active_storage/sfx/2578/2578-preview.mp3"></audio>
   <audio id="sfx-stop" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
 
@@ -444,24 +444,22 @@
       "【召喚「不想上工」之捲爺魔尊...】"
     ];
 
-    // 🎶 多首仙俠 BGM 曲目資料庫
+    // 🎶 100% 穩定且開放外連的免費仙俠音樂庫 (Mixkit CDN)
     const bgmTracks = [
-      "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=chinamusic-113579.mp3",
-      "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a706be.mp3?filename=traditional-chinese-music-10271.mp3",
-      "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=chinese-bamboo-flute-14022.mp3",
-      "https://cdn.pixabay.com/download/audio/2022/10/14/audio_993f309a4b.mp3?filename=chinese-guzheng-12345.mp3"
+      "https://assets.mixkit.co/music/preview/mixkit-oriental-spirit-119.mp3",
+      "https://assets.mixkit.co/music/preview/mixkit-ninja-spirit-104.mp3",
+      "https://assets.mixkit.co/music/preview/mixkit-zen-meditation-135.mp3",
+      "https://assets.mixkit.co/music/preview/mixkit-serene-view-443.mp3"
     ];
 
     let currentTrackIndex = 0;
     let isPlayingBGM = false;
 
-    // 展開 / 收起音樂選單
     function toggleBgmMenu() {
       const menu = document.getElementById("bgm-menu");
       menu.classList.toggle("show");
     }
 
-    // 點擊選單外部自動關閉下拉選單
     window.addEventListener('click', (e) => {
       const container = document.querySelector('.bgm-dropdown-container');
       if (container && !container.contains(e.target)) {
@@ -469,17 +467,19 @@
       }
     });
 
-    // 開關播放控制
     function toggleBGM() {
       const bgm = document.getElementById("bgm");
       const toggleBtn = document.getElementById("bgm-toggle-btn");
       const bgmMainBtn = document.getElementById("bgm-btn");
 
       if (!isPlayingBGM) {
-        bgm.play().catch(e => console.log("BGM Play prevented:", e));
-        toggleBtn.innerText = "⏸️ 關閉音樂";
-        bgmMainBtn.innerText = "🔊 ";
-        isPlayingBGM = true;
+        bgm.play().then(() => {
+          toggleBtn.innerText = "⏸️ 關閉音樂";
+          bgmMainBtn.innerText = "🔊 ";
+          isPlayingBGM = true;
+        }).catch(e => {
+          console.warn("Autoplay Error:", e);
+        });
       } else {
         bgm.pause();
         toggleBtn.innerText = "▶️ 播放音樂";
@@ -488,19 +488,19 @@
       }
     }
 
-    // 切換曲目
     function selectTrack(index, btnElement) {
       currentTrackIndex = index;
       const bgm = document.getElementById("bgm");
+      
+      bgm.pause();
       bgm.src = bgmTracks[index];
+      bgm.load();
 
-      // 更新選單按鈕高亮樣式
       document.querySelectorAll('.bgm-track-btn').forEach(btn => btn.classList.remove('active'));
       if (btnElement) btnElement.classList.add('active');
 
-      // 若原先正在播放，更換後繼續播放；若靜音則自動開始播放
       if (isPlayingBGM) {
-        bgm.play();
+        bgm.play().catch(e => console.log("Play interrupted:", e));
       } else {
         toggleBGM();
       }
@@ -624,7 +624,7 @@
       const imgElement = document.getElementById("meme");
       const slotTextSpin = document.getElementById("slot-text-spin");
 
-      document.getElementById("sfx-spin").play();
+      document.getElementById("sfx-spin").play().catch(e => {});
 
       lever.classList.add("lever-pull");
       setTimeout(() => lever.classList.remove("lever-pull"), 400);
@@ -655,7 +655,7 @@
       const slotTextSpin = document.getElementById("slot-text-spin");
       const statusText = document.getElementById("status-text");
 
-      document.getElementById("sfx-stop").play();
+      document.getElementById("sfx-stop").play().catch(e => {});
 
       clearInterval(textInterval);
       clearInterval(slotTextInterval);
